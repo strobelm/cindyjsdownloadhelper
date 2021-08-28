@@ -1,5 +1,4 @@
-const puppeteer = require("puppeteer");
-const fs = require("fs");
+import puppeteer from "puppeteer";
 
 const args = process.argv.slice(2);
 if (args.length != 2) {
@@ -8,9 +7,9 @@ if (args.length != 2) {
     );
 }
 
-const [input, output] = args;
+export async function takeCindyJSScreenshot() {
+    const [input, output] = args;
 
-(async () => {
     // launch a new chrome instance
     const browser = await puppeteer.launch({
         // headless: false,
@@ -47,7 +46,7 @@ const [input, output] = args;
 
     // close the browser
     await browser.close();
-})();
+}
 
 function getHTMLWrapper(dataURL) {
     return `<!DOCTYPE html>

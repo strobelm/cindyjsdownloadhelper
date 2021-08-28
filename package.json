@@ -2,12 +2,14 @@
   "name": "cindyjsdownloadhelper",
   "version": "1.0.0",
   "description": "",
-  "main": "cindyscreenshot.js",
+  "main": "index.js",
+  "type": "module",
   "dependencies": {
     "puppeteer": "^10.2.0"
   },
   "devDependencies": {},
   "scripts": {
+    "start" : "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
