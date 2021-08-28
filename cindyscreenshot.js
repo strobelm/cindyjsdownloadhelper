@@ -29,7 +29,6 @@ const [input, output] = args;
 
     const dataUrl = await page.evaluate(async () => {
         if (window.cdy) {
-            cdy.exportPDF();
             window.cdy.exportPDF();
         } else {
             const dataUrl = document.getElementById("CSCanvas").firstChild.toDataURL();
