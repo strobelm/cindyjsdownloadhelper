@@ -1,13 +1,7 @@
 import puppeteer from "puppeteer";
+import fs from "fs";
 
-const args = process.argv.slice(2);
-if (args.length != 2) {
-    throw new Error(
-        "please provide the input file and the output file: e.g. node cindyscreenshot.js construction.html outputDir"
-    );
-}
-
-export async function takeCindyJSScreenshot() {
+export async function takeCindyJSScreenshot(args) {
     const [input, output] = args;
 
     // launch a new chrome instance
@@ -36,6 +30,9 @@ export async function takeCindyJSScreenshot() {
     });
 
     if (dataUrl) {
+        if (!fs.existsSync(output)) {
+            fs.mkdirSync(output);
+        }
         page.setContent(getHTMLWrapper(dataUrl));
         await page.pdf({
             format: "A4",
