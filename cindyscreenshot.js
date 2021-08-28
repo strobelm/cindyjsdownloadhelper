@@ -4,7 +4,7 @@ const fs = require("fs");
 const args = process.argv.slice(2);
 if (args.length != 2) {
     throw new Error(
-        "please provide the input file and the output file: e.g. node cindyscreenshot.js construction.html output.pdf"
+        "please provide the input file and the output file: e.g. node cindyscreenshot.js construction.html outputDir"
     );
 }
 
@@ -14,24 +14,37 @@ const [input, output] = args;
     // launch a new chrome instance
     const browser = await puppeteer.launch({
         // headless: false,
+        // devtools: true,
     });
 
     // create a new page
     const page = await browser.newPage();
     await page.goto("file://" + input);
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
-    // get CSCanvas as PNG Image
+    await page._client.send("Page.setDownloadBehavior", {
+        behavior: "allow",
+        downloadPath: output,
+    });
+
     const dataUrl = await page.evaluate(async () => {
-        return document.getElementById("CSCanvas").firstChild.toDataURL();
+        if (window.cdy) {
+            cdy.exportPDF();
+            window.cdy.exportPDF();
+        } else {
+            const dataUrl = document.getElementById("CSCanvas").firstChild.toDataURL();
+            return dataUrl;
+        }
     });
 
-    page.setContent(getHTMLWrapper(dataUrl));
-
-    await page.pdf({
-        format: "A4",
-        path: output,
-    });
+    if (dataUrl) {
+        page.setContent(getHTMLWrapper(dataUrl));
+        await page.pdf({
+            format: "A4",
+            path: output + "/CindyJSExport.pdf",
+        });
+    }
+    await page.waitForTimeout(500);
 
     // close the browser
     await browser.close();
